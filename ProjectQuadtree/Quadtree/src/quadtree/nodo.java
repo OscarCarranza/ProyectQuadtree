@@ -5,8 +5,7 @@ import java.awt.Color;
 public class nodo {
     private Color color;
     private nodo parent;
-    private nodo LeftBrother;
-    private nodo RightBrother;
+    private Object[] sons;
     
     public nodo() {
     }
@@ -15,12 +14,10 @@ public class nodo {
         this.color = color;
     }
 
-    
-    public nodo(Color color, nodo parent, nodo LeftBrother, nodo RightBrother) {
+    public nodo(Color color, nodo parent, Object[] sons) {
         this.color = color;
         this.parent = parent;
-        this.LeftBrother = LeftBrother;
-        this.RightBrother = RightBrother;
+        this.sons = sons;
     }
 
     public Color getColor() {
@@ -39,28 +36,16 @@ public class nodo {
         this.parent = parent;
     }
 
-    public nodo getLeftBrother() {
-        return LeftBrother;
+    public Object[] getSons() {
+        return sons;
     }
 
-    public void setLeftBrother(nodo LeftBrother) {
-        this.LeftBrother = LeftBrother;
+    public void setSons(Object[] sons) {
+        this.sons = sons;
     }
-
-    public nodo getRightBrother() {
-        return RightBrother;
-    }
-
-    public void setRightBrother(nodo RightBrother) {
-        this.RightBrother = RightBrother;
-    }
-    
-    
 
     @Override
     public String toString() {
         return "nodo{" + "color=" + color + '}';
     }
-    
-    
 }
