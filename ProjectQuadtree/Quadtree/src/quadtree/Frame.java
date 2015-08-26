@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -71,7 +72,7 @@ public class Frame extends javax.swing.JFrame {
         depth = new javax.swing.JSpinner();
         jLabel12 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
+        photoframe = new javax.swing.JLabel();
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -329,11 +330,12 @@ public class Frame extends javax.swing.JFrame {
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/quadtree/depth.png"))); // NOI18N
 
-        depth.setFont(new java.awt.Font("Comic Sans MS", 1, 24)); // NOI18N
+        depth.setFont(new java.awt.Font("Clarendon Lt BT", 1, 18)); // NOI18N
+        depth.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 1));
 
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/quadtree/depth.png"))); // NOI18N
 
-        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/quadtree/file.png"))); // NOI18N
+        photoframe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/quadtree/file.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -341,14 +343,14 @@ public class Frame extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel13)
+                .addComponent(photoframe)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel13)
+                .addComponent(photoframe)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -386,12 +388,12 @@ public class Frame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(Button_SI)
-                        .addGap(18, 18, 18)
-                        .addComponent(Button_accept)
-                        .addGap(18, 18, 18)
+                        .addGap(76, 76, 76)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel12)
-                            .addComponent(depth, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(depth, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Button_accept))
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(153, 153, 153)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -408,12 +410,48 @@ public class Frame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void Tree(BufferedImage image, int depth, nodo raiz) {
+        try {
+            int temp = image.getRGB(image.getWidth() - 1, image.getHeight() - 1);
+            boolean cambio = false;
+            for (int i = 0; i < image.getWidth(); i++) {
+                for (int j = 0; j < image.getHeight(); j++) {
+                    if (image.getRGB(i, j) != temp) {
+                        cambio = true;
+                        break;
+                    }
+                }
+                if (cambio) {
+                    break;
+                }
+            }
+            if (cambio && depth <= (int) profundidad.getValue() && image.getWidth() > 4 && image.getHeight() > 4) {
+                if (prof < depth) {
+                    prof = depth;
+                }
+                raiz.setValue(true);
+                //PrimerCuadrante
+                Arbol(image.getSubimage(image.getWidth() / 2, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, raiz.getCuadrante1());
+                //SegundoCuadrante
+                Arbol(image.getSubimage(0, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, raiz.getCuadrante2());
+                //TercerCuadrante
+                Arbol(image.getSubimage(0, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, raiz.getCuadrante3());
+                //CuartoCuadante
+                Arbol(image.getSubimage(image.getWidth() / 2, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, raiz.getCuadrante4());
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "La profundidad es muy grande\n"
+                    + "Profundidad deseada: " + profundidad.getValue() + "\n"
+                    + "Profundidad maxima alcanzada: " + depth);
+        }
+
+    }
     private Image Resize(Image img, int h, int w){
         BufferedImage resized = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);  
         
@@ -424,9 +462,15 @@ public class Frame extends javax.swing.JFrame {
       return resized;
     }
     
-     public Image imageIconToImage(ImageIcon imageIcon){
+    public Image imageIconToImage(ImageIcon imageIcon){
         Image imgReturn=(Image)imageIcon.getImage();
         return imgReturn;
+    }
+    
+     public Icon bufferedImageToIcon(BufferedImage bufferImage){
+        ImageIcon imgIcon=new ImageIcon(bufferImage);
+        Icon iconReturn = (Icon)(imgIcon);
+        return iconReturn;
     }
      
     public Icon imageToIcon(Image image){
@@ -501,6 +545,8 @@ public class Frame extends javax.swing.JFrame {
                 }
 
                 ImageIO.write(image, "jpg", f);
+                JOptionPane.showConfirmDialog(this, "HRLOeRTEWRT");
+                photoframe.setIcon(bufferedImageToIcon(image));
             }
             catch(IOException e){
                 System.out.println(e);
@@ -528,7 +574,7 @@ public class Frame extends javax.swing.JFrame {
         }
 
         ImageIcon RealImg = new ImageIcon(ext);
-        jLabel13.setIcon(imageToIcon(Resize(imageIconToImage(RealImg),jLabel13.getWidth(),jLabel13.getHeight())));
+        photoframe.setIcon(imageToIcon(Resize(imageIconToImage(RealImg),photoframe.getWidth(),photoframe.getHeight())));
 
         try{
             ImageIcon icon = (ImageIcon)RealImg;
@@ -609,7 +655,6 @@ public class Frame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -624,6 +669,7 @@ public class Frame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JLabel photoframe;
     // End of variables declaration//GEN-END:variables
     String ext = "";
 }
