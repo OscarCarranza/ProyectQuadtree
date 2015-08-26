@@ -19,7 +19,6 @@ public class QuadTree {
     public void setRaiz(nodo raiz) {
         this.raiz = raiz;
     }
-
     public boolean isIsRoot() {
         return isRoot;
     }
@@ -27,6 +26,4 @@ public class QuadTree {
     public String toString() {
         return "QuadTree{" + "raiz=" + raiz + '}';
     }
-    
-    
 }
