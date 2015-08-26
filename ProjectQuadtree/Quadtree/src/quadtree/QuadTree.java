@@ -23,7 +23,6 @@ public class QuadTree {
     public boolean isIsRoot() {
         return isRoot;
     }
-    
     @Override
     public String toString() {
         return "QuadTree{" + "raiz=" + raiz + '}';
