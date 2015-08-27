@@ -53,7 +53,9 @@ public class nodo {
             }
         }
     }
-    
+    public boolean isRoot(){
+        return isRoot;
+    }
     @Override
     public String toString() {
         return "nodo{" + "color=" + color + '}';

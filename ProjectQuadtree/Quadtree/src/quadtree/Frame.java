@@ -314,7 +314,7 @@ public class Frame extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Bitmap Converter");
 
-        Button_SI.setIcon(new javax.swing.ImageIcon("C:\\Users\\Oscar\\Documents\\Binary\\bSI2.png")); // NOI18N
+        Button_SI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/quadtree/bSI2.png"))); // NOI18N
         Button_SI.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 Button_SIMouseClicked(evt);
@@ -364,13 +364,13 @@ public class Frame extends javax.swing.JFrame {
                         .addGap(36, 36, 36)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel12)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(sp_depth, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(Button_accept)
-                            .addComponent(Button_SI)))
+                            .addComponent(Button_SI, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(221, 221, 221)
                         .addComponent(jLabel5))
@@ -384,17 +384,19 @@ public class Frame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addComponent(jLabel1)
-                .addGap(34, 34, 34)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(Button_SI)
-                        .addGap(76, 76, 76)
+                        .addGap(40, 40, 40)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(Button_SI, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel12)
                             .addComponent(sp_depth, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(Button_accept))
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(Button_accept)))
                 .addGap(153, 153, 153)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -415,7 +417,8 @@ public class Frame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    void Arbol(BufferedImage image, int depth, nodo root) {
+
+    void TreeDivision(BufferedImage image, int depth, nodo root) {
         try {
             int last_pixel = image.getRGB(image.getWidth() - 1, image.getHeight() - 1);
             boolean lastPixReached = false;
@@ -430,10 +433,10 @@ public class Frame extends javax.swing.JFrame {
             if (lastPixReached && depth <= (int)sp_depth.getValue() && image.getWidth() > 4 && image.getHeight() > 4) {
                 
                 root.setPartition(true);
-                Arbol(image.getSubimage(image.getWidth() / 2, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(1));
-                Arbol(image.getSubimage(0, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(2));
-                Arbol(image.getSubimage(0, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(3));
-                Arbol(image.getSubimage(image.getWidth() / 2, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(4));
+                TreeDivision(image.getSubimage(image.getWidth() / 2, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(1));
+                TreeDivision(image.getSubimage(0, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(2));
+                TreeDivision(image.getSubimage(0, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(3));
+                TreeDivision(image.getSubimage(image.getWidth() / 2, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(4));
             }
         } 
         catch (Exception e) {
@@ -446,6 +449,7 @@ public class Frame extends javax.swing.JFrame {
         ImageIcon imgIcon=new ImageIcon(image);
         Icon iconReturn=(Icon)imgIcon;
         return iconReturn;
+
     }
     
     public Image imageIconToImage(ImageIcon imageIcon){
@@ -463,6 +467,32 @@ public class Frame extends javax.swing.JFrame {
         return resized;
     }
      
+    private void ColorTree(BufferedImage gray_scale, int C_RGB, nodo Cuadrante){
+        if (Cuadrante.isRoot()) {
+            for (int i = 0; i < this.gray_scale.getWidth(); i++) {//subdividir imagen en cuatro
+                this.gray_scale.setRGB(i, this.gray_scale.getHeight()/2, C_RGB);
+            }
+            for (int i = 0; i < this.gray_scale.getHeight(); i++) {
+                this.gray_scale.setRGB(this.gray_scale.getWidth()/2, i, C_RGB);
+            }
+        }
+        try {
+            if (Cuadrante.getSon(1).isRoot()) {
+                ColorTree(gray_scale.getSubimage(gray_scale.getWidth()/2, 0, gray_scale.getWidth()/2, gray_scale.getHeight()/2), C_RGB, Cuadrante.getSon(1));
+            }
+            if (Cuadrante.getSon(2).isRoot()) {
+                ColorTree(gray_scale.getSubimage(0, 0, gray_scale.getWidth()/2, gray_scale.getHeight()/2), C_RGB, Cuadrante.getSon(2));
+            }
+            if (Cuadrante.getSon(3).isRoot()) {
+                ColorTree(gray_scale.getSubimage(0,gray_scale.getHeight()/2, gray_scale.getWidth()/2, gray_scale.getHeight()/2), C_RGB, Cuadrante.getSon(3));
+            }
+            if (Cuadrante.getSon(4).isRoot()) {
+                ColorTree(gray_scale.getSubimage(gray_scale.getWidth()/2,gray_scale.getHeight()/2, gray_scale.getWidth()/2, gray_scale.getHeight()/2), C_RGB, Cuadrante.getSon(4));
+            }
+        } catch (Exception e) {
+        }
+    }
+    
      
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         //File selected is not image
@@ -529,6 +559,7 @@ public class Frame extends javax.swing.JFrame {
                 }
 
                 ImageIO.write(image, "jpg", f);
+                gray_scale = image;
             }    
             catch(IOException e){
                 System.out.println(e);
@@ -654,4 +685,5 @@ public class Frame extends javax.swing.JFrame {
     private javax.swing.JSpinner sp_depth;
     // End of variables declaration//GEN-END:variables
     String ext = "";
+    BufferedImage gray_scale;
 }
