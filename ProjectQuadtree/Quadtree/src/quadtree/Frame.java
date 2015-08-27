@@ -5,6 +5,7 @@
  */
 package quadtree;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
@@ -32,8 +33,8 @@ public class Frame extends javax.swing.JFrame {
     public Frame() {
         initComponents();
         this.setLocationRelativeTo(null);
+        tree = new QuadTree();
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -424,22 +425,29 @@ public class Frame extends javax.swing.JFrame {
             boolean lastPixReached = false;
             for (int i = 0; i < image.getWidth(); i++) {
                 for (int j = 0; j < image.getHeight(); j++) {
+                    System.out.println("for1");
                     if (image.getRGB(i, j) != last_pixel) {
                         lastPixReached = true;
                         break;
                     }
                 }
+                if(lastPixReached == true)
+                    break;
             }
-            if (lastPixReached && depth <= (int)sp_depth.getValue() && image.getWidth() > 4 && image.getHeight() > 4) {
-                
+            
+            if (lastPixReached && depth <= (int)sp_depth.getValue()) {
                 root.setPartition(true);
-                TreeDivision(image.getSubimage(image.getWidth() / 2, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(1));
-                TreeDivision(image.getSubimage(0, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(2));
-                TreeDivision(image.getSubimage(0, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(3));
-                TreeDivision(image.getSubimage(image.getWidth() / 2, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(4));
+                TreeDivision(image.getSubimage(image.getWidth() / 2, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(0));
+                System.out.println("Partition1");
+                TreeDivision(image.getSubimage(0, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(1));
+                System.out.println("Partition2");
+                TreeDivision(image.getSubimage(0, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(2));
+                System.out.println("Partition3");
+                TreeDivision(image.getSubimage(image.getWidth() / 2, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(3));
             }
         } 
         catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Depth to Big");
         }
     
@@ -455,6 +463,11 @@ public class Frame extends javax.swing.JFrame {
     public Image imageIconToImage(ImageIcon imageIcon){
         Image imgReturn=(Image)imageIcon.getImage();
         return imgReturn;
+    }
+    
+     public ImageIcon bufferedImageToImageIcon(BufferedImage bufferImage){
+        ImageIcon imgIconReturn = new ImageIcon(bufferImage);
+        return imgIconReturn;
     }
     
     private Image Resize(Image img, int h, int w){
@@ -534,6 +547,7 @@ public class Frame extends javax.swing.JFrame {
             int width = image.getWidth();
             int height = image.getHeight();
 
+            //Convertir a gray scale
             for(int i = 0; i < height; i++){
                 for(int j = 0; j < width; j++){
                     int p = image.getRGB(j,i);
@@ -549,8 +563,21 @@ public class Frame extends javax.swing.JFrame {
                     image.setRGB(j, i, p);
                 }
             }
-
-            try{
+            
+            gray_scale = image;
+            
+            if((int)sp_depth.getValue() == 0){
+                JOptionPane.showMessageDialog(this, "Depth must be greater than cero");
+            }
+            
+            else{
+                TreeDivision(gray_scale,1,tree.getRaiz());
+                System.out.println("Dividio el arbol");
+                ColorTree(gray_scale,Color.BLACK.getRGB(),tree.getRaiz());
+                System.out.println("Coloreo el arbol");
+                photoframe.setIcon(imageToIcon(Resize(gray_scale,photoframe.getWidth(),photoframe.getHeight())));
+                
+                try{
                 f = new File("./output.jpg");
                 int cont = 0;
                 while(f.exists()){
@@ -560,16 +587,23 @@ public class Frame extends javax.swing.JFrame {
 
                 ImageIO.write(image, "jpg", f);
                 gray_scale = image;
-            }    
-            catch(IOException e){
-                System.out.println(e);
-            }
+                }    
+                
+                catch(IOException e){
+                    System.out.println(e);
+                }
 
-            Celebrate.pack();
-            Celebrate.setTitle("Wohoo");
-            Celebrate.setLocationRelativeTo(null);
-            Celebrate.setModal(true);
-            Celebrate.setVisible(true);
+                photoframe.setIcon(imageToIcon(Resize(imageIconToImage(bufferedImageToImageIcon(gray_scale)),photoframe.getWidth(),photoframe.getHeight())));
+
+                Celebrate.pack();
+                Celebrate.setTitle("Wohoo");
+                Celebrate.setLocationRelativeTo(null);
+                Celebrate.setModal(true);
+                Celebrate.setVisible(true);
+            }
+            
+
+            
 
         }
     }//GEN-LAST:event_Button_acceptMouseClicked
@@ -686,4 +720,5 @@ public class Frame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     String ext = "";
     BufferedImage gray_scale;
+    QuadTree tree;
 }
