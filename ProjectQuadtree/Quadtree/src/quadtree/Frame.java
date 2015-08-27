@@ -611,18 +611,11 @@ public class Frame extends javax.swing.JFrame {
                 Celebrate.setModal(true);
                 Celebrate.setVisible(true);
             }
-<<<<<<< HEAD
             Celebrate.pack();
             Celebrate.setTitle("Wohoo");
             Celebrate.setLocationRelativeTo(null);
             Celebrate.setModal(true);
             Celebrate.setVisible(true);
-=======
-            
-
-            
->>>>>>> db6bb44691392d5b2eb2474516dfc54a5ddcd3ae
-
         }
     }//GEN-LAST:event_Button_acceptMouseClicked
 
@@ -739,9 +732,5 @@ public class Frame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     String ext = "";
     BufferedImage gray_scale;
-<<<<<<< HEAD
-    BufferedImage generada;
-=======
     QuadTree tree;
->>>>>>> db6bb44691392d5b2eb2474516dfc54a5ddcd3ae
 }
