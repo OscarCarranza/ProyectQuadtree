@@ -1,15 +1,13 @@
 package quadtree;
 public class QuadTree {
     private nodo raiz;
-    private boolean isRoot;
 
     public QuadTree() {
-        isRoot = true;
+        raiz = new nodo();
     }
 
     public QuadTree(nodo raiz) {
         this.raiz = raiz;
-        isRoot = true;
     }
 
     public nodo getRaiz() {
@@ -18,9 +16,6 @@ public class QuadTree {
 
     public void setRaiz(nodo raiz) {
         this.raiz = raiz;
-    }
-    public boolean isIsRoot() {
-        return isRoot;
     }
     @Override
     public String toString() {
