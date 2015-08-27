@@ -4,11 +4,14 @@ import java.awt.Color;
 
 public class nodo {
     private Color color;
-    private nodo parent;
-    private Object[] sons;
+    private nodo[] sons;
     private boolean isRoot;
     
     public nodo() {
+        sons = new nodo[4];
+        for (int i = 0; i < 4; i++) {
+            sons[i] = null;
+        }
         isRoot = false;
     }
 
@@ -17,11 +20,13 @@ public class nodo {
         isRoot = false;
     }
 
-    public nodo(Color color, nodo parent, Object[] sons) {
+    public nodo(Color color, nodo[] sons) {
         this.color = color;
-        this.parent = parent;
-        this.sons = sons;
+        for(int i = 0; i < 4; i++){
+           this.sons[i] = sons[i];
+        }
         isRoot = false;
+        
     }
 
     public Color getColor() {
@@ -32,26 +37,30 @@ public class nodo {
         this.color = color;
     }
 
-    public nodo getParent() {
-        return parent;
+    public nodo getSon(int index) {
+        return sons[index];
     }
 
-    public void setParent(nodo parent) {
-        this.parent = parent;
-    }
-
-    public Object[] getSons() {
-        return sons;
-    }
-
-    public void setSons(Object[] sons) {
+    public void setSons(nodo[] sons) {
         this.sons = sons;
     }
 
-    public boolean isIsRoot() {
-        return isRoot;
+    public void setPartition(boolean b) {
+        isRoot = b;
+        if(b){
+            for (int i = 0; i < 4; i++) {
+                sons[i] = new nodo();
+            }
+        }
     }
-    
+    public boolean isRoot(){
+        if (sons != null) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     @Override
     public String toString() {
         return "nodo{" + "color=" + color + '}';
