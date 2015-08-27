@@ -416,42 +416,6 @@ public class Frame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void Tree(BufferedImage image, int depth, nodo raiz) {
-        try {
-            int temp = image.getRGB(image.getWidth() - 1, image.getHeight() - 1);
-            boolean cambio = false;
-            for (int i = 0; i < image.getWidth(); i++) {
-                for (int j = 0; j < image.getHeight(); j++) {
-                    if (image.getRGB(i, j) != temp) {
-                        cambio = true;
-                        break;
-                    }
-                }
-                if (cambio) {
-                    break;
-                }
-            }
-            if (cambio && depth <= (int) profundidad.getValue() && image.getWidth() > 4 && image.getHeight() > 4) {
-                if (prof < depth) {
-                    prof = depth;
-                }
-                raiz.setValue(true);
-                //PrimerCuadrante
-                Arbol(image.getSubimage(image.getWidth() / 2, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, raiz.getCuadrante1());
-                //SegundoCuadrante
-                Arbol(image.getSubimage(0, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, raiz.getCuadrante2());
-                //TercerCuadrante
-                Arbol(image.getSubimage(0, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, raiz.getCuadrante3());
-                //CuartoCuadante
-                Arbol(image.getSubimage(image.getWidth() / 2, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, raiz.getCuadrante4());
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "La profundidad es muy grande\n"
-                    + "Profundidad deseada: " + profundidad.getValue() + "\n"
-                    + "Profundidad maxima alcanzada: " + depth);
-        }
-
-    }
     private Image Resize(Image img, int h, int w){
         BufferedImage resized = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);  
         
