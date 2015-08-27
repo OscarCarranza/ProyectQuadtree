@@ -429,7 +429,7 @@
                               <Group type="102" attributes="0">
                                   <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="depth" min="-2" pref="67" max="-2" attributes="0"/>
+                                  <Component id="sp_depth" min="-2" pref="67" max="-2" attributes="0"/>
                               </Group>
                               <Component id="Button_accept" min="-2" max="-2" attributes="0"/>
                               <Component id="Button_SI" min="-2" max="-2" attributes="0"/>
@@ -460,7 +460,7 @@
                           <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
-                              <Component id="depth" min="-2" pref="44" max="-2" attributes="0"/>
+                              <Component id="sp_depth" min="-2" pref="44" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="Button_accept" min="-2" max="-2" attributes="0"/>
@@ -513,7 +513,7 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JSpinner" name="depth">
+        <Component class="javax.swing.JSpinner" name="sp_depth">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Clarendon Lt BT" size="18" style="1"/>

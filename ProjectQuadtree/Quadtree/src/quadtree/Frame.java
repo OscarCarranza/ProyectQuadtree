@@ -69,7 +69,7 @@ public class Frame extends javax.swing.JFrame {
         Button_SI = new javax.swing.JLabel();
         Button_accept = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        depth = new javax.swing.JSpinner();
+        sp_depth = new javax.swing.JSpinner();
         jLabel12 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         photoframe = new javax.swing.JLabel();
@@ -330,8 +330,8 @@ public class Frame extends javax.swing.JFrame {
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/quadtree/depth.png"))); // NOI18N
 
-        depth.setFont(new java.awt.Font("Clarendon Lt BT", 1, 18)); // NOI18N
-        depth.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 1));
+        sp_depth.setFont(new java.awt.Font("Clarendon Lt BT", 1, 18)); // NOI18N
+        sp_depth.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 1));
 
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/quadtree/depth.png"))); // NOI18N
 
@@ -368,7 +368,7 @@ public class Frame extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel12)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(depth, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(sp_depth, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(Button_accept)
                             .addComponent(Button_SI)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -391,7 +391,7 @@ public class Frame extends javax.swing.JFrame {
                         .addGap(76, 76, 76)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel12)
-                            .addComponent(depth, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(sp_depth, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(Button_accept))
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -416,14 +416,41 @@ public class Frame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private Image Resize(Image img, int h, int w){
-        BufferedImage resized = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);  
-        
-        Graphics2D g2 = resized.createGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2.drawImage(img,0,0,w,h,null);
+    void TreeDivision(BufferedImage image, int depth, nodo root) {
+        try {
+            int last_pixel = image.getRGB(image.getWidth() - 1, image.getHeight() - 1);
+            boolean lastPixReached = false;
+            for (int i = 0; i < image.getWidth(); i++) {
+                for (int j = 0; j < image.getHeight(); j++) {
+                    if (image.getRGB(i, j) != last_pixel) {
+                        lastPixReached = true;
+                        break;
+                    }
+                }
+                /*if (lastPixReached) {
+                    break;
+                }*/
+            }
+            if (lastPixReached && depth <= (int)sp_depth.getValue() && image.getWidth() > 4 && image.getHeight() > 4) {
                 
-      return resized;
+                root.setPartition(true);
+                TreeDivision(image.getSubimage(image.getWidth() / 2, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(1));
+                TreeDivision(image.getSubimage(0, 0, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(2));
+                TreeDivision(image.getSubimage(0, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(3));
+                TreeDivision(image.getSubimage(image.getWidth() / 2, image.getHeight() / 2, image.getWidth() / 2, image.getHeight() / 2), depth + 1, root.getSon(4));
+            }
+        } 
+        catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Depth to Big");
+        }
+    
+    }
+    
+    public Icon imageToIcon(Image image){
+        ImageIcon imgIcon=new ImageIcon(image);
+        Icon iconReturn=(Icon)imgIcon;
+        return iconReturn;
+
     }
     
     public Image imageIconToImage(ImageIcon imageIcon){
@@ -431,18 +458,33 @@ public class Frame extends javax.swing.JFrame {
         return imgReturn;
     }
     
-     public Icon bufferedImageToIcon(BufferedImage bufferImage){
-        ImageIcon imgIcon=new ImageIcon(bufferImage);
-        Icon iconReturn = (Icon)(imgIcon);
-        return iconReturn;
+    private Image Resize(Image img, int h, int w){
+        BufferedImage resized = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
+        
+        Graphics2D g2 = resized.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.drawImage(img,0,0,w,h,null);
+        
+        return resized;
     }
      
-    public Icon imageToIcon(Image image){
-        ImageIcon imgIcon=new ImageIcon(image);
-        Icon iconReturn=(Icon)imgIcon;
-        return iconReturn;
+    private void ColorTree(BufferedImage gray_scale, int C_RGB, nodo Cuadrante){
+        if (Cuadrante.isRoot()) {
+            for (int i = 0; i < this.gray_scale.getWidth(); i++) {//subdividir imagen en cuatro
+                this.gray_scale.setRGB(i, this.gray_scale.getHeight()/2, C_RGB);
+            }
+            for (int i = 0; i < this.gray_scale.getHeight(); i++) {
+                this.gray_scale.setRGB(this.gray_scale.getWidth()/2, i, C_RGB);
+            }
+        }
+        try {
+            if (Cuadrante.getSon(1).isRoot()) {
+                ColorTree(gray_scale.getSubimage(gray_scale.getWidth()/2, 0, gray_scale.getWidth()/2, gray_scale.getHeight()/2), C_RGB, Cuadrante.getSon(1));
+            }
+        } catch (Exception e) {
+        }
     }
-     
+    
      
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         //File selected is not image
@@ -509,9 +551,8 @@ public class Frame extends javax.swing.JFrame {
                 }
 
                 ImageIO.write(image, "jpg", f);
-                JOptionPane.showConfirmDialog(this, "HRLOeRTEWRT");
-                photoframe.setIcon(bufferedImageToIcon(image));
-            }
+                gray_scale = image;
+            }    
             catch(IOException e){
                 System.out.println(e);
             }
@@ -610,7 +651,6 @@ public class Frame extends javax.swing.JFrame {
     private javax.swing.JDialog Celebrate;
     private javax.swing.JDialog ImgERROR;
     private javax.swing.JDialog ImgSUCC;
-    private javax.swing.JSpinner depth;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -634,6 +674,8 @@ public class Frame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JLabel photoframe;
+    private javax.swing.JSpinner sp_depth;
     // End of variables declaration//GEN-END:variables
     String ext = "";
+    BufferedImage gray_scale;
 }

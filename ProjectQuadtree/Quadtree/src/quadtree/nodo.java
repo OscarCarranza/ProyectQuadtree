@@ -37,15 +37,15 @@ public class nodo {
         this.color = color;
     }
 
-    public nodo[] getSons() {
-        return sons;
+    public nodo getSon(int index) {
+        return sons[index];
     }
 
     public void setSons(nodo[] sons) {
         this.sons = sons;
     }
 
-    public void setIsRoot(boolean b) {
+    public void setPartition(boolean b) {
         isRoot = b;
         if(b){
             for (int i = 0; i < 4; i++) {
@@ -53,7 +53,9 @@ public class nodo {
             }
         }
     }
-    
+    public boolean isRoot(){
+        return isRoot;
+    }
     @Override
     public String toString() {
         return "nodo{" + "color=" + color + '}';
