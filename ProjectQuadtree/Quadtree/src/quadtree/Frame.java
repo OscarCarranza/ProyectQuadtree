@@ -481,6 +481,15 @@ public class Frame extends javax.swing.JFrame {
             if (Cuadrante.getSon(1).isRoot()) {
                 ColorTree(gray_scale.getSubimage(gray_scale.getWidth()/2, 0, gray_scale.getWidth()/2, gray_scale.getHeight()/2), C_RGB, Cuadrante.getSon(1));
             }
+            if (Cuadrante.getSon(2).isRoot()) {
+                ColorTree(gray_scale.getSubimage(0, 0, gray_scale.getWidth()/2, gray_scale.getHeight()/2), C_RGB, Cuadrante.getSon(2));
+            }
+            if (Cuadrante.getSon(3).isRoot()) {
+                ColorTree(gray_scale.getSubimage(0,gray_scale.getHeight()/2, gray_scale.getWidth()/2, gray_scale.getHeight()/2), C_RGB, Cuadrante.getSon(3));
+            }
+            if (Cuadrante.getSon(4).isRoot()) {
+                ColorTree(gray_scale.getSubimage(gray_scale.getWidth()/2,gray_scale.getHeight()/2, gray_scale.getWidth()/2, gray_scale.getHeight()/2), C_RGB, Cuadrante.getSon(4));
+            }
         } catch (Exception e) {
         }
     }
